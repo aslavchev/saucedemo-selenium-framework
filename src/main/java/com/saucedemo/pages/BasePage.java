@@ -11,7 +11,7 @@ import java.time.Duration;
 
 /**
  * Base class for all Page Objects.
- * Contains essential methods — add more as needed.
+ * Provides common actions: click, type, getText, waits.
  */
 public class BasePage {
 
@@ -25,14 +25,6 @@ public class BasePage {
         this.driver = driver;
         this.wait = new WebDriverWait(driver, DEFAULT_TIMEOUT);
         this.logger = LoggerFactory.getLogger(this.getClass());
-    }
-
-    /**
-     * Escape hatch for operations BasePage doesn't support.
-     * Prefer using click(), type(), getText() when possible.
-     */
-    protected WebDriver getDriver() {
-        return driver;
     }
 
     // ==================== Core Actions ====================
@@ -76,5 +68,9 @@ public class BasePage {
 
     protected WebElement waitForClickable(By locator) {
         return wait.until(ExpectedConditions.elementToBeClickable(locator));
+    }
+
+    public String getCurrentUrl() {
+        return driver.getCurrentUrl();
     }
 }
