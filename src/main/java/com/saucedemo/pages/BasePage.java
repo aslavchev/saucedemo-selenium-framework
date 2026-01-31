@@ -60,6 +60,10 @@ public class BasePage {
         }
     }
 
+    protected int getElementCount(By locator) {
+        return driver.findElements(locator).size();
+    }
+
     // ==================== Waits ====================
 
     protected WebElement waitForVisible(By locator) {
