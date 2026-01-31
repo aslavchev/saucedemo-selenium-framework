@@ -18,8 +18,7 @@ jobs:
 
     strategy:
       matrix:
-        java-version: [17, 21]
-      fail-fast: false  # Continue other matrix jobs if one fails
+        java-version: [21]
 
     steps:
       - name: Checkout code

@@ -94,8 +94,6 @@ Tests run automatically on:
 - Push to `main` or `develop`
 - Pull requests to `main`
 
-Matrix: Java 17 + Java 21
-
 Artifacts: Allure reports, failure screenshots
 
 ---
