@@ -1,0 +1,77 @@
+name: Selenium Tests
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:  # Allow manual trigger
+
+env:
+  SAUCE_USERNAME: ${{ secrets.SAUCE_USERNAME }}
+  SAUCE_PASSWORD: ${{ secrets.SAUCE_PASSWORD }}
+  BASE_URL: ${{ secrets.BASE_URL }}
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        java-version: [17, 21]
+      fail-fast: false  # Continue other matrix jobs if one fails
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK ${{ matrix.java-version }}
+        uses: actions/setup-java@v4
+        with:
+          java-version: ${{ matrix.java-version }}
+          distribution: 'temurin'
+          cache: maven
+
+      - name: Install Chrome
+        uses: browser-actions/setup-chrome@v1
+        with:
+          chrome-version: stable
+
+      - name: Cache Maven dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+
+      - name: Run tests
+        run: mvn clean test -Dheadless=true
+
+      - name: Generate Allure Report
+        if: always()
+        run: mvn allure:report
+
+      - name: Upload Allure Results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-results-java-${{ matrix.java-version }}
+          path: target/allure-results
+          retention-days: 30
+
+      - name: Upload Allure Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-report-java-${{ matrix.java-version }}
+          path: target/site/allure-maven-plugin
+          retention-days: 30
+
+      - name: Upload Screenshots (on failure)
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: failure-screenshots-java-${{ matrix.java-version }}
+          path: target/screenshots
+          retention-days: 7
