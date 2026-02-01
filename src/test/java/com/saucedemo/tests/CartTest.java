@@ -67,4 +67,23 @@ public class CartTest extends BaseTest {
         // Assert
         assertTrue(productsPage.isLoaded(), "Should return to products page");
     }
+
+    @Description("Verify adding multiple products updates cart badge correctly")
+    @Test(groups = {"smoke"})
+    public void cartBadgeUpdatesWithMultipleProducts() {
+        // Arrange
+        assertEquals(productsPage.getCartItemCount(), 0, "Cart should be empty initially");
+
+        // Act
+        productsPage.addProductToCart(Products.BACKPACK.id());
+        productsPage.addProductToCart(Products.BIKE_LIGHT.id());
+        productsPage.addProductToCart(Products.BOLT_TSHIRT.id());
+
+        // Assert
+        assertEquals(productsPage.getCartItemCount(), 3, "Cart should have 3 items");
+
+        // Verify all items in cart
+        productsPage.goToCart();
+        assertEquals(cartPage.getCartItemCount(), 3, "Cart page should show 3 items");
+    }
 }

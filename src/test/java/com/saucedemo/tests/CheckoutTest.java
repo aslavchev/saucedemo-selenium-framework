@@ -60,6 +60,27 @@ public class CheckoutTest extends BaseTest {
         assertEquals(checkoutCompletePage.getHeader(), "Thank you for your order!");
     }
 
+    @Description("Verify cart is empty after completing order (E2E)")
+    @Test(groups = {"smoke", "e2e"})
+    public void cartIsEmptyAfterOrderCompletion() {
+        // Arrange
+        checkoutInfoPage.fillCustomerInfo(
+                TestCustomers.STANDARD.firstName(),
+                TestCustomers.STANDARD.lastName(),
+                TestCustomers.STANDARD.postalCode());
+
+        // Act
+        checkoutInfoPage.continueToOverview();
+        checkoutOverviewPage.finishCheckout();
+        assertTrue(checkoutCompletePage.isLoaded(), "Checkout should be complete");
+        checkoutCompletePage.backToHome();
+
+        // Assert
+        assertTrue(productsPage.isLoaded(), "Should return to products page");
+        assertTrue(productsPage.getCurrentUrl().contains("inventory"), "URL should contain 'inventory'");
+        assertEquals(productsPage.getCartItemCount(), 0, "Cart should be empty after order completion");
+    }
+
     @Description("Verify checkout fails when first name is missing")
     @Test(groups = {"regression"})
     public void checkoutFailsWithEmptyFirstName() {
