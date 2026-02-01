@@ -1,6 +1,7 @@
 # SauceDemo Selenium Framework
 
 [![Selenium Tests](https://github.com/aslavchev/saucedemo-selenium-framework/actions/workflows/tests.yml/badge.svg)](https://github.com/aslavchev/saucedemo-selenium-framework/actions/workflows/tests.yml)
+[![Live Report](https://img.shields.io/badge/Allure-Live%20Report-blueviolet)](https://aslavchev.github.io/saucedemo-selenium-framework/)
 [![Java](https://img.shields.io/badge/Java-21-orange)](https://openjdk.org/)
 [![Selenium](https://img.shields.io/badge/Selenium-4.40-green)](https://www.selenium.dev/)
 [![TestNG](https://img.shields.io/badge/TestNG-7.12-blue)](https://testng.org/)
