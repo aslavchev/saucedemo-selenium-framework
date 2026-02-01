@@ -1,5 +1,6 @@
 package com.saucedemo.pages;
 
+import com.saucedemo.config.TestConfig;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 
@@ -16,6 +17,10 @@ public class LoginPage extends BasePage {
 
     public LoginPage(WebDriver driver) {
         super(driver);
+    }
+
+    public void open() {
+        navigateTo(TestConfig.getBaseUrl());
     }
 
     public void login(String username, String password) {

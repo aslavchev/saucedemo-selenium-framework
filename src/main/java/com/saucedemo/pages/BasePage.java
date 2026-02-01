@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.Duration;
+import java.util.List;
 
 /**
  * Base class for all Page Objects.
@@ -64,6 +65,10 @@ public class BasePage {
         return driver.findElements(locator).size();
     }
 
+    protected List<WebElement> findElements(By locator) {
+        return driver.findElements(locator);
+    }
+
     // ==================== Waits ====================
 
     protected WebElement waitForVisible(By locator) {
@@ -76,5 +81,9 @@ public class BasePage {
 
     public String getCurrentUrl() {
         return driver.getCurrentUrl();
+    }
+
+    protected void navigateTo(String url) {
+        driver.get(url);
     }
 }
