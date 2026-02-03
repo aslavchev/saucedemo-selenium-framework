@@ -8,7 +8,12 @@ import org.slf4j.LoggerFactory;
  * Centralized configuration management.
  * Reads from environment variables with .env file fallback for local development.
  *
- * Priority: System Environment Variables > .env file > Default values
+ * Priority: System Environment Variables > .env file
+ * Fails fast if required configuration is missing.
+ *
+ * Setup:
+ * 1. Copy .env.example to .env
+ * 2. Set SAUCE_USERNAME and SAUCE_PASSWORD
  */
 public final class TestConfig {
 
@@ -17,7 +22,7 @@ public final class TestConfig {
 
     static {
         dotenv = Dotenv.configure()
-                .ignoreIfMissing()  // Don't fail if .env doesn't exist (CI environment)
+                .ignoreIfMissing()  // Don't fail if .env doesn't exist (CI uses env vars)
                 .load();
         logger.info("Configuration loaded successfully");
     }
@@ -29,17 +34,17 @@ public final class TestConfig {
     // ==================== Credentials ====================
 
     public static String getUsername() {
-        return getEnv("SAUCE_USERNAME", "standard_user");
+        return getRequiredEnv("SAUCE_USERNAME");
     }
 
     public static String getPassword() {
-        return getEnv("SAUCE_PASSWORD", "secret_sauce");
+        return getRequiredEnv("SAUCE_PASSWORD");
     }
 
     // ==================== URLs ====================
 
     public static String getBaseUrl() {
-        String url = getEnv("BASE_URL", "https://www.saucedemo.com");
+        String url = getOptionalEnv("BASE_URL", "https://www.saucedemo.com");
         // Normalize: remove trailing slash
         return url.endsWith("/") ? url.substring(0, url.length() - 1) : url;
     }
@@ -47,7 +52,7 @@ public final class TestConfig {
     // ==================== Browser Configuration ====================
 
     public static String getBrowser() {
-        return getEnv("BROWSER", "chrome").toLowerCase();
+        return getOptionalEnv("BROWSER", "chrome").toLowerCase();
     }
 
     /**
@@ -59,40 +64,71 @@ public final class TestConfig {
         if (headlessProperty != null) {
             return Boolean.parseBoolean(headlessProperty);
         }
-        return Boolean.parseBoolean(getEnv("HEADLESS", "false"));
+        return Boolean.parseBoolean(getOptionalEnv("HEADLESS", "false"));
     }
 
     // ==================== Paths ====================
 
     public static String getScreenshotPath() {
-        return getEnv("SCREENSHOT_PATH", "target/screenshots");
+        return getOptionalEnv("SCREENSHOT_PATH", "target/screenshots");
     }
 
     // ==================== Helper Methods ====================
 
     /**
-     * Get environment variable with fallback to .env file, then default value.
+     * Get required configuration value. Fails fast if not found.
      *
-     * @param key          Environment variable name
-     * @param defaultValue Default value if not found
+     * @param key Configuration key
      * @return The configuration value
+     * @throws IllegalStateException if configuration is missing
      */
-    private static String getEnv(String key, String defaultValue) {
-        // First check system environment (for CI)
+    private static String getRequiredEnv(String key) {
+        String value = getEnv(key);
+        if (value == null || value.isEmpty()) {
+            throw new IllegalStateException(
+                    key + " not configured. Set in .env file or system environment."
+            );
+        }
+        return value;
+    }
+
+    /**
+     * Get optional configuration value with default fallback.
+     *
+     * @param key          Configuration key
+     * @param defaultValue Default value if not found
+     * @return The configuration value or default
+     */
+    private static String getOptionalEnv(String key, String defaultValue) {
+        String value = getEnv(key);
+        if (value == null || value.isEmpty()) {
+            logger.debug("Using default value for {}: {}", key, defaultValue);
+            return defaultValue;
+        }
+        return value;
+    }
+
+    /**
+     * Get configuration value from environment.
+     * Priority: System env > .env file
+     *
+     * @param key Configuration key
+     * @return The value or null if not found
+     */
+    private static String getEnv(String key) {
+        // Priority 1: System environment (for CI)
         String systemValue = System.getenv(key);
         if (systemValue != null && !systemValue.isEmpty()) {
             return systemValue;
         }
 
-        // Then check .env file (for local development)
+        // Priority 2: .env file (for local development)
         String dotenvValue = dotenv.get(key);
         if (dotenvValue != null && !dotenvValue.isEmpty()) {
             return dotenvValue;
         }
 
-        // Fall back to default
-        logger.debug("Using default value for {}: {}", key, defaultValue);
-        return defaultValue;
+        return null;
     }
 
     /**
