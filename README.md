@@ -63,20 +63,22 @@ src/
 
 ## Configuration
 
-Create a `.env` file (optional — defaults work for SauceDemo):
+Defaults work out of the box for SauceDemo. Override via environment variables or Maven properties:
 
-```env
-SAUCE_USERNAME=standard_user
-SAUCE_PASSWORD=secret_sauce
-BASE_URL=https://www.saucedemo.com
-BROWSER=chrome
-HEADLESS=false
-```
-
-Or use environment variables / Maven properties:
+| Variable | Default | Description |
+| -------- | ------- | ----------- |
+| `SAUCE_USERNAME` | `standard_user` | Login username |
+| `SAUCE_PASSWORD` | `secret_sauce` | Login password |
+| `BASE_URL` | `https://www.saucedemo.com` | Application URL |
+| `BROWSER` | `chrome` | Browser (`chrome` or `firefox`) |
+| `HEADLESS` | `false` | Run headless (`true`/`false`) |
 
 ```bash
+# Override via Maven property
 mvn test -Dheadless=true -Dbrowser=firefox
+
+# Override via environment variable
+export BROWSER=firefox && mvn clean test
 ```
 
 ## Test Users
