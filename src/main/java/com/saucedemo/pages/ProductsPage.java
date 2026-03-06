@@ -43,7 +43,7 @@ public class ProductsPage extends BasePage {
         click(removeButton);
     }
 
-    public int getCartItemCount() {
+    public int getCartBadgeCount() {
         if (!isDisplayed(CART_BADGE)) {
             return 0;
         }

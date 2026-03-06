@@ -72,7 +72,7 @@ public class CartTest extends BaseTest {
     @Test(groups = {"smoke"})
     public void cartBadgeUpdatesWithMultipleProducts() {
         // Arrange
-        assertEquals(productsPage.getCartItemCount(), 0, "Cart should be empty initially");
+        assertEquals(productsPage.getCartBadgeCount(), 0, "Cart should be empty initially");
 
         // Act
         productsPage.addProductToCart(Products.BACKPACK.id());
@@ -80,7 +80,7 @@ public class CartTest extends BaseTest {
         productsPage.addProductToCart(Products.BOLT_TSHIRT.id());
 
         // Assert
-        assertEquals(productsPage.getCartItemCount(), 3, "Cart should have 3 items");
+        assertEquals(productsPage.getCartBadgeCount(), 3, "Cart should have 3 items");
 
         // Verify all items in cart
         productsPage.goToCart();

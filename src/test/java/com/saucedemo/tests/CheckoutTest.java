@@ -78,7 +78,7 @@ public class CheckoutTest extends BaseTest {
         // Assert
         assertTrue(productsPage.isLoaded(), "Should return to products page");
         assertTrue(productsPage.getCurrentUrl().contains("inventory"), "URL should contain 'inventory'");
-        assertEquals(productsPage.getCartItemCount(), 0, "Cart should be empty after order completion");
+        assertEquals(productsPage.getCartBadgeCount(), 0, "Cart should be empty after order completion");
     }
 
     @Description("Verify checkout fails when first name is missing")

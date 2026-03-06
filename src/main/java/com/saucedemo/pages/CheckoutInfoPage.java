@@ -1,7 +1,6 @@
 package com.saucedemo.pages;
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 
 /**
@@ -35,12 +34,7 @@ public class CheckoutInfoPage extends BasePage {
     }
 
     public boolean isErrorDisplayed() {
-        try {
-            waitForVisible(ERROR_MESSAGE);
-            return true;
-        } catch (TimeoutException e) {
-            return false;
-        }
+        return isDisplayed(ERROR_MESSAGE);
     }
 
     public String getErrorMessage() {

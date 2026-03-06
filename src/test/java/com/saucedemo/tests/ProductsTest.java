@@ -44,13 +44,13 @@ public class ProductsTest extends BaseTest {
     @Test(groups = {"smoke"})
     public void cartBadgeUpdatesOnAddProduct() {
         // Arrange
-        assertEquals(productsPage.getCartItemCount(), 0, "Cart should be empty initially");
+        assertEquals(productsPage.getCartBadgeCount(), 0, "Cart should be empty initially");
 
         // Act
         productsPage.addProductToCart(Products.BACKPACK.id());
 
         // Assert
-        assertEquals(productsPage.getCartItemCount(), 1, "Cart should have 1 item");
+        assertEquals(productsPage.getCartBadgeCount(), 1, "Cart should have 1 item");
     }
 
     @Description("Verify products can be sorted by name A-Z")
@@ -97,13 +97,13 @@ public class ProductsTest extends BaseTest {
         loginPage.login(TestUsers.ERROR.username(), TestUsers.ERROR.password());
         ProductsPage errorProductsPage = new ProductsPage(driver);
         errorProductsPage.addProductToCart(Products.BACKPACK.id());
-        assertEquals(errorProductsPage.getCartItemCount(), 1, "Product should be added");
+        assertEquals(errorProductsPage.getCartBadgeCount(), 1, "Product should be added");
 
         // Act - try to remove product from inventory page
         errorProductsPage.removeProductFromCart(Products.BACKPACK.id());
 
         // Assert - item still in cart (removal failed)
-        assertEquals(errorProductsPage.getCartItemCount(), 1,
+        assertEquals(errorProductsPage.getCartBadgeCount(), 1,
                 "Error user should not be able to remove items from inventory page");
     }
 }
